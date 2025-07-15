@@ -3,8 +3,6 @@
 #include <string>
 #include "utility.h"
 
-#include <SQLiteCpp/SQLiteCpp.h>
-
 int main()
 {
 	std::string encryptionKey;
