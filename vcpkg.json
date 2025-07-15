@@ -1,5 +1,8 @@
 {
-    "name": "discord-tickets-fastdump",
-    "version-string": "1.0.0",
-    "dependencies": [ "sqlitecpp", "openssl" ]
+  "name": "discord-tickets-fastdump",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "openssl",
+    "nlohmann-json"
+  ]
 }
