@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 #include <nlohmann/json.hpp>
+#include "ThreadPool.hpp"
 #include "utility.h"
 
 using json = nlohmann::json;

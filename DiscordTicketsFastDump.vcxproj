@@ -133,6 +133,7 @@
     <None Include="vcpkg.json" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ThreadPool.hpp" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
