@@ -18,11 +18,6 @@ inline std::vector<unsigned char> hexToBytes(const std::string& hex) {
     return bytes;
 }
 
-inline bool isLikelyEncrypted(const std::string& s) {
-    return s.size() >= 64 && std::all_of(s.begin(), s.end(), [](char c) { return isxdigit(c); });
-}
-
-
 inline bool decryptCryptr(
     const std::string& encryptedHex,
     const std::string& password,
