@@ -4,8 +4,13 @@
 #include <openssl/aes.h>
 #include <openssl/rand.h>
 #include <vector>
+#include <future>
 #include <string>
+#include <nlohmann/json.hpp>
 #include <algorithm>
+#include "ThreadPool.hpp"
+
+using json = nlohmann::json;
 
 inline std::vector<unsigned char> hexToBytes(const std::string& hex) {
     std::vector<unsigned char> bytes;
@@ -61,4 +66,61 @@ inline bool decryptCryptr(
         }
     }
     return false;
+}
+
+void decryptNestedFields(json& data, const std::string& key) {
+    if (data.is_object()) {
+        std::vector<std::shared_ptr<bool>> completionFlags;
+
+        for (auto& [k, v] : data.items())
+        {
+            if (k == "content" || k == "displayName" ||
+                k == "username" || k == "comment" || k == "value" || k == "topic") {
+
+                if (v.is_null() || v == "") {
+                    continue; // long time decryption attempts on null values & errors if is null!. error if the string is empty as well
+                }
+
+                auto flag = std::make_shared<bool>(false);
+                completionFlags.push_back(flag);
+
+                ThreadPool->Run([&v, &key, flag]() {
+                    std::string decrypted;
+                    if (decryptCryptr(v.get<std::string>(), key, decrypted)) {
+                        v = decrypted;
+                    }
+                    else {
+                        std::cerr << "[!] Failed to decrypt key\n";
+                    }
+                    *flag = true; // !! IMPORTANT !!
+                    });
+            }
+            else if (v.is_object() || v.is_array())
+            {
+                decryptNestedFields(v, key);
+            }
+        }
+
+        bool allDone;
+        do {
+            allDone = true;
+            for (const auto& flag : completionFlags)
+            {
+                if (!*flag) {
+                    allDone = false;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                    break;
+                }
+            }
+        } while (!allDone);
+    }
+    else if (data.is_array())
+    {
+        for (auto& item : data) {
+            if (item.is_object() || item.is_array())
+            {
+                decryptNestedFields(item, key);
+            }
+        }
+    }
 }
