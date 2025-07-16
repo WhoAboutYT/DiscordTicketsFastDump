@@ -23,6 +23,9 @@ A simple script to dump the Discord Tickets database (encrypted) to a `.zip` fil
 For Releases, please do the following.
 
 a. Modify your discord-tickets solution TICKETS worker to not decrypt, instead, to serve the encrypted as plaintext.
+
 b. Once you do that, restart your bot and panel, and export. Take the tickets.jsonl file and put it inside of your working directory.
+
 c. Run the executable, and complete the prompts correctly.
+
 d. Enjoy! Once done, rename the file as tickets.jsonl, and re-create the WinRar/7-Zip archive and import the files.
